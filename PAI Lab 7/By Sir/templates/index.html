@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lab 7 - Spotify Knowledge Representation</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; padding: 40px; background: #121212; color: white; }
+        .search-box { background: #1DB954; padding: 25px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        pre { background: #191414; padding: 25px; border: 1px solid #1DB954; color: #1DB954; border-radius: 8px; overflow-x: auto; }
+        input { padding: 12px; width: 350px; border-radius: 8px; border: none; font-size: 16px; }
+        button { padding: 12px 25px; background: black; color: white; border: none; cursor: pointer; border-radius: 8px; font-weight: bold; font-size: 16px; }
+        button:hover { background: #333; }
+    </style>
+</head>
+<body>
+    <div class="search-box">
+        <h1>Spotify API Lab Task</h1>
+        <p>Knowledge Representation & Reasoning via Flask Backend [cite: 3, 75]</p>
+        <input type="text" id="userInput" placeholder="Search for a song (e.g., Sargoshi)...">
+        <button onclick="runSearch()">SEARCH KNOWLEDGE</button>
+    </div>
+
+    <h3>Output Frame (JSON Data):</h3>
+    <pre id="jsonOutput">Results will be parsed here...</pre>
+
+    <script>
+        async function runSearch() {
+            const query = document.getElementById('userInput').value;
+            const output = document.getElementById('jsonOutput');
+            output.textContent = "Querying Knowledge Base...";
+            
+            try {
+                const res = await fetch(`/search/${encodeURIComponent(query)}`);
+                const data = await res.json();
+                output.textContent = JSON.stringify(data, null, 2);
+            } catch (e) {
+                output.textContent = "Error connecting to the reasoning engine.";
+            }
+        }
+    </script>
+</body>
+</html>

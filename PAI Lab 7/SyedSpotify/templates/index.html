@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PAI Lab 7 - Spotify</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #121212; color: white; }
+        pre { background: #282828; padding: 15px; border-radius: 5px; overflow-x: auto; }
+        input { padding: 8px; width: 250px; }
+        button { padding: 8px 15px; cursor: pointer; background: #1DB954; border: none; color: white; }
+    </style>
+</head>
+<body>
+    <h2>Spotify Knowledge Representation</h2>
+    <input type="text" id="query" placeholder="Enter song name...">
+    <button onclick="fetchData()">Search</button>
+
+    <h3>API Result (JSON Format):</h3>
+    <pre id="output">Search results will appear here...</pre>
+
+    <script>
+        async function fetchData() {
+            const q = document.getElementById('query').value;
+            const res = await fetch(`/search/${q}`);
+            const data = await res.json();
+            document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+        }
+    </script>
+</body>
+</html>
