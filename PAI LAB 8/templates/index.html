@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Music Search</title>
+    <style>
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; background: #f4f4f9; padding: 50px; }
+        .search-box { margin-bottom: 30px; }
+        input { padding: 10px; width: 250px; border: 1px solid #ccc; border-radius: 5px; }
+        button { padding: 10px 20px; cursor: pointer; background: #28a745; color: white; border: none; border-radius: 5px; }
+        #results { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; width: 100%; max-width: 800px; }
+        .card { 
+    background: white; 
+    padding: 15px; 
+    border-radius: 10px; 
+    text-align: center; 
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* This is the correct property */
+}
+        img { border-radius: 5px; width: 100px; }
+    </style>
+</head>
+<body>
+
+    <h1>🎵 Music With Syed</h1>
+    
+    <div class="search-box">
+        <input type="text" id="userInput" placeholder="Search for a song or artist...">
+        <button onclick="performSearch()">Search</button>
+    </div>
+
+    <div id="results">
+        </div>
+
+    <script>
+        async function performSearch() {
+            const query = document.getElementById('userInput').value;
+            const resultsDiv = document.getElementById('results');
+            
+            if (!query) return alert("Please type something!");
+
+            // Show loading state
+            resultsDiv.innerHTML = "<p>Searching...</p>";
+
+            try {
+                // FETCHING FROM YOUR OWN BACK-END
+                const response = await fetch(`/api/search/${query}`);
+                const data = await response.json();
+
+                resultsDiv.innerHTML = ""; // Clear loading text
+
+                if (data.results && data.results.length > 0) {
+                    data.results.forEach(song => {
+                        resultsDiv.innerHTML += `
+                            <div class="card">
+                                <img src="${song.artworkUrl100}" alt="Album Art">
+                                <h4>${song.trackName}</h4>
+                                <p>${song.artistName}</p>
+                                <audio controls src="${song.previewUrl}" style="width: 100%;"></audio>
+                            </div>
+                        `;
+                    });
+                } else {
+                    resultsDiv.innerHTML = "<p>No results found. Try another search!</p>";
+                }
+            } catch (error) {
+                resultsDiv.innerHTML = "<p>Error connecting to back-end.</p>";
+            }
+        }
+    </script>
+</body>
+</html>
