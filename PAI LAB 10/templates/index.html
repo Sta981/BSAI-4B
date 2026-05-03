@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lab 10 Chatbot</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f9; padding: 20px; }
+        .chat-container { max-width: 500px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .chat-box { height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 10px; margin-bottom: 10px; background: #fafafa; }
+        .user-msg { color: blue; text-align: right; margin: 5px 0; }
+        .bot-msg { color: green; text-align: left; margin: 5px 0; }
+        input[type="text"] { width: 75%; padding: 10px; }
+        button { width: 20%; padding: 10px; background: blue; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <h2>Lab 10:Superior Insight </h2>
+    <div class="chat-box" id="chat-box">
+        <div class="bot-msg">Hello! Type something to test the Flask connection.</div>
+    </div>
+    
+    <input type="text" id="user-input" placeholder="Type a message...">
+    <button onclick="sendMessage()">Send</button>
+</div>
+
+<script>
+    async function sendMessage() {
+        const input = document.getElementById("user-input");
+        const message = input.value.trim();
+        if (!message) return;
+
+        const chatBox = document.getElementById("chat-box");
+        chatBox.innerHTML += `<div class="user-msg">You: ${message}</div>`;
+        input.value = "";
+
+        // Send to Flask app.py
+        const response = await fetch("/ask", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: message })
+        });
+
+        const data = await response.json();
+        chatBox.innerHTML += `<div class="bot-msg">${data.answer}</div>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+</script>
